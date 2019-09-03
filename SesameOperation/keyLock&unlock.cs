@@ -7,7 +7,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 //using Newtonsoft.Json;
-using System.Net.Http;  //HttpClient‚ğg‚¤‚½‚ß‚É•K—v?
+using System.Net.Http;  //Use HttpClient Required
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Text;
@@ -15,39 +15,41 @@ using System.Text;
 namespace SesameOperation
 {
 
-    //•ÊƒNƒ‰ƒX
-    //private HttpClient client = new HttpClient();  //‘—M‹@”\
+    //Separate Class
+    //private HttpClient client = new HttpClient();  //Send Function
     public static class KeyStateChange
     {
         private const String url = "https://api.candyhouse.co/public";    //necessary format
-        private const String api_key = "A9QDCiB-RMyOhunAvJLQFqOZW10ALdydLg42xoMySOUqhWTmrBU1fyAgRZoiQYFxCfducc2HEiWa";    //»•i‚É‚æ‚Á‚Äƒ†ƒj[ƒN‚È’l
+        //Set API Key(See ToDo.txt)
+        private const String api_key = "";    //unique value per product
 
         [FunctionName("KeyStateChange")]
 
-        /*Sesame‚Ì‹@Šíî•ñ‚ğæ“¾‚·‚é*/
-        //public static async Task<HttpResponseMessage> receive_sesame_info(HttpClient client) {  //async‚É‚Â‚¢‚Ä‚ÍŒã‚ÅÚ‚µ‚­
-        //    var request = new HttpRequestMessage(HttpMethod.Get, url + "/sesames");    //ƒƒbƒZ[ƒW(—v‹ƒNƒGƒŠ)
-        //    request.Headers.Add("Authorization", api_key);              //ƒwƒbƒ_[‚ğ’Ç‰Á
-        //    var response = await client.SendAsync(request);             //”ñ“¯Šú‘€ì‚ÅHTTP—v‹‚ğ‘—M(await‚ÍŒ‹‰Ê‘Ò‚¿‚Ìó‘Ô‚ğ•\‚·BŒ‹‰Ê‚ğ“¾‚é‚ÆˆÈ~‚Ìˆ—‚ªi‚ŞB)
+        /* Get sesame product information */
+        //public static async Task<HttpResponseMessage> receive_sesame_info(HttpClient client) {  // Research async information datailed
+        //    var request = new HttpRequestMessage(HttpMethod.Get, url + "/sesames");    // message(Required Query)
+        //    request.Headers.Add("Authorization", api_key);              // add header
+        //    var response = await client.SendAsync(request);             // Send HTTP Requirement by async(await is result wait state. When get result, advance afterwards process.)
 
         //    return response;
         //}
 
-        ///*Sesame‚ÌŒ»ó‘Ô‚ğæ“¾‚·‚é*/
+        ///* Get sesame current state */
         //public HttpClient receive_sesame_state()
         //{
 
         //    return
         //}
 
-        ///*Sesame‚ğ‘€ì(lock/unlock)‚·‚é*/
+
+        ///* Operate(lock/unlock) sesame */
         //public HttpClient receive_sesame_operate()
         //{
 
         //    return
         //}
 
-        ///*Sesame‚Ìƒ^ƒXƒNó‹µ‚ğæ“¾‚·‚é*/
+        ///* Get sesame task statement */
         //public HttpClient receive_sesame_task_state()
         //{
 
@@ -59,76 +61,79 @@ namespace SesameOperation
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            //String[] id_array = new string[0]; //ƒfƒoƒCƒXID‚Ì‚İ‚ğŠi”[‚·‚é‰Â•Ï’·‚ÌˆêŸŒ³”z—ñ
+            //String[] id_array = new string[0]; //ï¿½fï¿½oï¿½Cï¿½XIDï¿½Ì‚İ‚ï¿½ï¿½iï¿½[ï¿½ï¿½ï¿½ï¿½Â•Ï’ï¿½ï¿½ÌˆêŸï¿½ï¿½ï¿½zï¿½ï¿½
             String device_id="";
-            //APIƒL[‚ğ—p‚¢‚ÄAƒfƒoƒCƒXID‚ğæ“¾‚·‚é(Œã‚ÅŠÖ”‚É•ª‚¯‚é)
-            var client = new HttpClient();  //‘—M‹@”\
-            var request = new HttpRequestMessage(HttpMethod.Get, url + "/sesames");    //ƒƒbƒZ[ƒW(—v‹ƒNƒGƒŠ)
-            request.Headers.Add("Authorization", api_key);              //ƒwƒbƒ_[‚ğ’Ç‰Á
-            var response = await client.SendAsync(request);             //”ñ“¯Šú‘€ì‚ÅHTTP—v‹‚ğ‘—M(await‚ÍŒ‹‰Ê‘Ò‚¿‚Ìó‘Ô‚ğ•\‚·BŒ‹‰Ê‚ğ“¾‚é‚ÆˆÈ~‚Ìˆ—‚ªi‚ŞB)
+            //Get device ID by API key (later separate function)
+            var client = new HttpClient();  //Send Function
+            var request = new HttpRequestMessage(HttpMethod.Get, url + "/sesames");    // message(Required Query)
+            request.Headers.Add("Authorization", api_key);              // add header
+            var response = await client.SendAsync(request);             // Send HTTP Requirement by async(await is result wait state. When get result, advance afterwards process.)
 
             //var response = await receive_sesame_info(client);
 
-            /*ƒZƒTƒ~‚Ìî•ñæ“¾¬Œ÷*/
+            /* Get sesame product information success */
             if ((int)response.StatusCode == 200)
             {
-                string sesame_info_body = await response.Content.ReadAsStringAsync();   //HTTP’ÊM‚Å“¾‚½body(device id, serial, nickname)‚ğæ“¾‚·‚é
-                //ƒZƒTƒ~‚ÌƒfƒoƒCƒXID‚ğæ“¾‚·‚é
-                string info_temp = sesame_info_body.Replace("[", "").Replace("]", "").Replace("{", "").Replace("}", "");   //•s•K—v‚È•¶š‚ğíœ
-                String[] info_array = info_temp.Split(",");    //device id, serial, nickname‚Ì•¶š—ñ‚ğŠi”[‚µ‚Ä‚¢‚é”z—ñ(g‚¤‚É‚Ísplit‚ª•K—v)
-                device_id = info_array[0].Split(":")[1].Replace("\"", "").Replace(" ", "");  //•s•K—v‚È‹ó”’‚Æƒ_ƒuƒ‹ƒNƒH[ƒe[ƒVƒ‡ƒ“‚ğœ‹‚µ‚½ƒfƒoƒCƒXID
-                //‘SƒZƒTƒ~‚ÌƒfƒoƒCƒXID‚ğŠi”[‚·‚é
+                string sesame_info_body = await response.Content.ReadAsStringAsync();   // body(device ID, serial, nickname) by Http communication
+                // Get sesame device ID
+                string info_temp = sesame_info_body.Replace("[", "").Replace("]", "").Replace("{", "").Replace("}", "");   // Replace unnecessary character
+                String[] info_array = info_temp.Split(",");    // Store device ID and serial, nickname(when use, split is necessary)
+                device_id = info_array[0].Split(":")[1].Replace("\"", "").Replace(" ", "");  // device ID(unnecessary space and double quartation is replaced)
+                // Store all sesame device ID
                 //int j = 0;
                 //for (int i = 0; i < array.Length; i++)
                 //{
                 //    if (i % 3 == 0)
                 //    {
-                //        Array.Resize(ref id_array, id_array.Length + 1);    //—v‘f”‚ğ‘‚â‚·
+                //        Array.Resize(ref id_array, id_array.Length + 1);    //ï¿½vï¿½fï¿½ï¿½ï¿½ğ‘‚â‚·
                 //        id_array[j] = array[i].Split(":")[1];
                 //        j += 1;
                 //    }
                 //}
             }
-            /*http’ÊM¸”s*/
+            /* Http communication Failed */
             else
             {
                 return (ActionResult)new OkObjectResult($"Get Sesame informaition Failed");
             }
 
-            //Sesame‚ÌŒ»ó‘Ô‚ğæ“¾‚·‚é
-            request = new HttpRequestMessage(HttpMethod.Get, url + $"/sesame/{device_id}");    //ƒƒbƒZ[ƒW(—v‹ƒNƒGƒŠ)
-            request.Headers.Add("Authorization", api_key);              //ƒwƒbƒ_[‚ğ’Ç‰Á
-            response = await client.SendAsync(request);             //”ñ“¯Šú‘€ì‚ÅHTTP—v‹‚ğ‘—M(await‚ÍŒ‹‰Ê‘Ò‚¿‚Ìó‘Ô‚ğ•\‚·BŒ‹‰Ê‚ğ“¾‚é‚ÆˆÈ~‚Ìˆ—‚ªi‚ŞB)
-            string status_body = await response.Content.ReadAsStringAsync();   //HTTP’ÊM‚Å“¾‚½body(locked, battery, responsive)‚ğæ“¾‚·‚é
-                                                                                 //ƒZƒTƒ~‚ÌƒfƒoƒCƒXID‚ğæ“¾‚·‚é
-            string status_temp = status_body.Replace("{", "").Replace("}", "");   //•s•K—v‚È•¶š‚ğíœ
-            String[] status_array = status_temp.Split(",");     //locked, battery, responsive‚Ì•¶š—ñ‚ğŠi”[‚µ‚Ä‚¢‚é”z—ñ(g‚¤‚É‚Ísplit‚ª•K—v)
-            var locked = status_array[0].Split(":")[1].Replace(" ", "");         //ƒƒbƒNó‹µ
-            var battery = status_array[1].Split(":")[1].Replace(" ", "");        //ƒoƒbƒeƒŠ[
-            var responsive = status_array[2].Split(":")[1].Replace(" ", "");     //g—p‰Â”\‚©
+            //Get sesame current state
+            request = new HttpRequestMessage(HttpMethod.Get, url + $"/sesame/{device_id}");    // message(Required Query)
+            request.Headers.Add("Authorization", api_key);               // add header
+            response = await client.SendAsync(request);             // Send HTTP Requirement by async(await is result wait state. When get result, advance afterwards process.)
+            string status_body = await response.Content.ReadAsStringAsync();   // body(locked, battery, responsive) by Http communication
+            
+            // Get sesame current state(lock or unlock)
+            string status_temp = status_body.Replace("{", "").Replace("}", "");   // Replace unnecessary character
+            String[] status_array = status_temp.Split(",");     // Store locked and battery, responsive(when use, split is necessary)
+            var locked = status_array[0].Split(":")[1].Replace(" ", "");         // locked
+            var battery = status_array[1].Split(":")[1].Replace(" ", "");        // battery
+            var responsive = status_array[2].Split(":")[1].Replace(" ", "");     // responsive
 
             //Console.WriteLine(locked);
             //Console.WriteLine(battery);
             //Console.WriteLine(responsive);
-
-            string user_select = req.Query["operation"];    //ƒ†[ƒU‚ªURL‚É“ü—Í‚µ‚½ŠJ‚¯•Â‚ß‚ğæ“¾‚·‚é
+            
+            //Get user input(lock or unlock)
+            string user_select = req.Query["operation"];
             Console.WriteLine(locked);
             Console.WriteLine(user_select);
-            /*URL‚Élock‚à‚µ‚­‚Íunlock‚ª“ü—Í‚³‚ê‚½ê‡*/
+            /* case lock or unlock in URL */
             if ((locked == "false" && user_select == "lock") || (locked == "true" && user_select == "unlock"))
             {
-                //Sesame‚ÌŠJù +{ùHTTP Client)
+                // lock or unlock sesame
                 var json = $"{{\"command\":\"{user_select}\"}}";
-                var request2 = new HttpRequestMessage(HttpMethod.Post, url + $"/sesame/{device_id}");   //url(—v‹ƒNƒGƒŠ)‚Ì”­s
-                request2.Content = new StringContent(json, Encoding.UTF8, "application/json");          //Content-Type+json‚Ì‘I‘ğ
-                request2.Headers.Add("Authorization", api_key);                                         //ƒwƒbƒ_[‚Ìw’è
-                var response2 = await client.SendAsync(request2);                                       //”ñ“¯Šú‘€ì‚ÅHTTP—v‹‚ğ‘—M(await‚ÍŒ‹‰Ê‘Ò‚¿‚Ìó‘Ô‚ğ•\‚·BŒ‹‰Ê‚ğ“¾‚é‚ÆˆÈ~‚Ìˆ—‚ªi‚ŞB)
-                string taskid_body = await response2.Content.ReadAsStringAsync();                     //HTTP’ÊM‚Å“¾‚½body(ƒ^ƒXƒNID)‚ğæ“¾‚·‚é
+                var request2 = new HttpRequestMessage(HttpMethod.Post, url + $"/sesame/{device_id}");   // message(Required Query)
+                request2.Content = new StringContent(json, Encoding.UTF8, "application/json");          // Select Content-Type+json
+                request2.Headers.Add("Authorization", api_key);                                         // add header
+                var response2 = await client.SendAsync(request2);                                       // Send HTTP Requirement by async(await is result wait state. When get result, advance afterwards process.)
+                string taskid_body = await response2.Content.ReadAsStringAsync();                       // body(taskID) by Http communication
                 //Console.WriteLine(url + $"/sesame/{device_id}");
                 //Console.WriteLine(response_body);
                 //Console.WriteLine(response2);
                 //Console.WriteLine(json);
-                /*lock,unlock‚Ì—v‹‚ª’Ê‚Á‚½*/
+
+                /* lock or unlock success */
                 if ((int)response2.StatusCode == 200)
                 {
                     if (user_select == "lock")
@@ -146,19 +151,20 @@ namespace SesameOperation
                     return (ActionResult)new OkObjectResult($"{locked}");
                 }
             }
-            //‚·‚Å‚É{ùÏ‚İ‚Ìê‡
+            // Already locked
             else if(locked == "true" && user_select == "lock") {
                 return new BadRequestObjectResult("Already Locked!!");
             }
 
-            //‚·‚Å‚ÉŠJùÏ‚İ‚Ìê‡
+            // Already unlocked
             else if (locked == "false" && user_select == "unlock"){
                 return new BadRequestObjectResult("Already Unlocked!!");
             }
             Console.WriteLine(locked);
             Console.WriteLine(user_select);
             Console.WriteLine("a");
-            //lock,unlock‚Ì‚Ç‚¿‚ç‚àŒ©“–‚½‚ç‚È‚¢ê‡
+
+            // None lock or unlock in URL
             return new BadRequestObjectResult("Please pass a operation on the query string or in the request body");
         }
     }
